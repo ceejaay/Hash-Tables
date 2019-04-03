@@ -71,7 +71,8 @@ unsigned int hash(char *str, int max)
 BasicHashTable *create_hash_table(int capacity)
 {
   BasicHashTable *ht;
-
+  ht->capacity = capacity;
+  ht->storage = calloc(capacity, sizeof(char *));
   return ht;
 }
 
@@ -84,7 +85,10 @@ BasicHashTable *create_hash_table(int capacity)
  ****/
 void hash_table_insert(BasicHashTable *ht, char *key, char *value)
 {
-
+  /* printf("ht capacity: %d", ht->capacity); */
+  /* int hashed = hash(key, 10); */
+  /* unsigned int hashed = hash(key, ht->capacity); */
+  /* printf("hashed key: %i", hashed); */
 }
 
 /****
@@ -121,7 +125,10 @@ void destroy_hash_table(BasicHashTable *ht)
 #ifndef TESTING
 int main(void)
 {
+  /* printf("hashed string %d\n", hash("hello world", 10)); */
+
   struct BasicHashTable *ht = create_hash_table(16);
+  printf("capacity %d\n", ht->capacity);
 
   hash_table_insert(ht, "line", "Here today...\n");
 
