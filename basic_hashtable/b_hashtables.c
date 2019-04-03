@@ -85,10 +85,21 @@ BasicHashTable *create_hash_table(int capacity)
  ****/
 void hash_table_insert(BasicHashTable *ht, char *key, char *value)
 {
+
+  int hashed = hash(key, ht->capacity);
+
+  if(ht-storage[hashed] == '\0')
+  {
+    ht->storage[hashed] = value
+  } else {
+    printf("You are overwriting another value\n");
+    ht->storage[hashed] = value
+  }
+  /* printf("value at hashed key %s\n", ht->storage[hashed]); */
   /* printf("ht capacity: %d", ht->capacity); */
   /* int hashed = hash(key, 10); */
   /* unsigned int hashed = hash(key, ht->capacity); */
-  /* printf("hashed key: %i", hashed); */
+  /* printf("hashed key: %i\n", hashed); */
 }
 
 /****
@@ -108,7 +119,10 @@ void hash_table_remove(BasicHashTable *ht, char *key)
  ****/
 char *hash_table_retrieve(BasicHashTable *ht, char *key)
 {
-  return NULL;
+  int hashed_key = hash(key, ht->capacity);
+  return ht->storage[hashed_key];
+
+  /* return NULL; */
 }
 
 /****
@@ -128,11 +142,12 @@ int main(void)
   /* printf("hashed string %d\n", hash("hello world", 10)); */
 
   struct BasicHashTable *ht = create_hash_table(16);
-  printf("capacity %d\n", ht->capacity);
+  /* printf("capacity %d\n", ht->capacity); */
+  /* ht->storage[1] = "hello"; */
+  /* printf("storage %s\n", ht->storage[1]); */
 
   hash_table_insert(ht, "line", "Here today...\n");
-
-  printf("%s", hash_table_retrieve(ht, "line"));
+  printf(" out of the hash table => %s", hash_table_retrieve(ht, "line"));
 
   hash_table_remove(ht, "line");
 
