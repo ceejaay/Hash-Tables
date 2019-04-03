@@ -71,6 +71,7 @@ unsigned int hash(char *str, int max)
 BasicHashTable *create_hash_table(int capacity)
 {
   BasicHashTable *ht;
+  ht = malloc(sizeof(BasicHashTable));
   ht->capacity = capacity;
   ht->storage = calloc(capacity, sizeof(char *));
   return ht;
@@ -88,12 +89,12 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
 
   int hashed = hash(key, ht->capacity);
 
-  if(ht-storage[hashed] == '\0')
+  if(ht->storage[hashed] == '\0')
   {
-    ht->storage[hashed] = value
+    ht->storage[hashed] = value;
   } else {
     printf("You are overwriting another value\n");
-    ht->storage[hashed] = value
+    ht->storage[hashed] = value;
   }
   /* printf("value at hashed key %s\n", ht->storage[hashed]); */
   /* printf("ht capacity: %d", ht->capacity); */
@@ -109,7 +110,11 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
  ****/
 void hash_table_remove(BasicHashTable *ht, char *key)
 {
-
+  int hashed_key = hash(key, ht->capacity);
+  /* printf("item getting deleted: %s", ht->storage[hashed_key]); */
+  ht->storage[hashed_key] = '\0';
+  /* free(ht->storage[hashed_key]); */
+  /* printf("item getting deleted: %s", ht->storage[hashed_key]); */
 }
 
 /****
@@ -132,6 +137,13 @@ char *hash_table_retrieve(BasicHashTable *ht, char *key)
  ****/
 void destroy_hash_table(BasicHashTable *ht)
 {
+  for(int i=0;i<ht->capacity; i++) {
+    free(ht->storage[i]);
+  }
+
+  free(ht->storage);
+  free(ht);
+
 
 }
 
@@ -147,7 +159,7 @@ int main(void)
   /* printf("storage %s\n", ht->storage[1]); */
 
   hash_table_insert(ht, "line", "Here today...\n");
-  printf(" out of the hash table => %s", hash_table_retrieve(ht, "line"));
+  printf("%s", hash_table_retrieve(ht, "line"));
 
   hash_table_remove(ht, "line");
 
