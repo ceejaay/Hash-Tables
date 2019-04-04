@@ -73,10 +73,9 @@ BasicHashTable *create_hash_table(int capacity)
   BasicHashTable *ht;
   ht = malloc(sizeof(BasicHashTable));
   ht->capacity = capacity;
-  ht->storage = calloc(capacity, sizeof(char *));
+  ht->storage = calloc(capacity, sizeof(Pair *));
   return ht;
 }
-
 /****
   Fill this in.
 
@@ -87,7 +86,9 @@ BasicHashTable *create_hash_table(int capacity)
 void hash_table_insert(BasicHashTable *ht, char *key, char *value)
 {
 
-  int hashed = hash(key, ht->capacity);
+  unsigned int hashed = hash(key, ht->capacity);
+  Pair *pair = create_pair(key, value);
+  Pair *stored_pair = ht->storage[hashed];
 
   if(ht->storage[hashed] == '\0')
   {
@@ -96,11 +97,6 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
     printf("You are overwriting another value\n");
     ht->storage[hashed] = value;
   }
-  /* printf("value at hashed key %s\n", ht->storage[hashed]); */
-  /* printf("ht capacity: %d", ht->capacity); */
-  /* int hashed = hash(key, 10); */
-  /* unsigned int hashed = hash(key, ht->capacity); */
-  /* printf("hashed key: %i\n", hashed); */
 }
 
 /****
@@ -112,6 +108,8 @@ void hash_table_remove(BasicHashTable *ht, char *key)
 {
   int hashed_key = hash(key, ht->capacity);
   /* printf("item getting deleted: %s", ht->storage[hashed_key]); */
+  /* if (ht->storage[hashed_key]) */
+  /* should have checked to see if something was not there. If nothing there, then print something that says so. */
   ht->storage[hashed_key] = '\0';
   /* free(ht->storage[hashed_key]); */
   /* printf("item getting deleted: %s", ht->storage[hashed_key]); */

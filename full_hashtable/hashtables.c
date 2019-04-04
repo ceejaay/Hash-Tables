@@ -23,6 +23,7 @@ typedef struct HashTable {
   LinkedPair **storage;
 } HashTable;
 
+/* so each item in the array/hash is a linked pair */
 /*
   Create a key/value linked pair to be stored in the hash table.
  */
@@ -74,7 +75,10 @@ unsigned int hash(char *str, int max)
 HashTable *create_hash_table(int capacity)
 {
   HashTable *ht;
-
+  ht = malloc(sizeof(HashTable));
+  ht->capacity = capacity;
+  ht->storage = calloc(capacity, sizeof(LinkedPair *));
+  /* each element in the array/hash table is going to be a linked pair */
   return ht;
 }
 
@@ -90,6 +94,20 @@ HashTable *create_hash_table(int capacity)
 void hash_table_insert(HashTable *ht, char *key, char *value)
 {
 
+  unsigned int index = hash(key, ht->capacity);
+  if(ht->storage[index] == '\0') {
+    struct LinkedPair *new_thing = create_pair(key, value);
+    ht->storage[index] = new_thing;
+    /* printf("this means an empty index\n"); */
+  } else {
+    LinkedPair *thing = ht->storage[index];
+    while(thing->next != NULL) {
+      thing = thing->next;
+    }
+    /* printf("thing value: %s passed in value: %s\n", thing->value, value); */
+    struct LinkedPair *n = create_pair(key, value);
+    thing->next = n;
+  }
 }
 
 /*
@@ -102,6 +120,14 @@ void hash_table_insert(HashTable *ht, char *key, char *value)
  */
 void hash_table_remove(HashTable *ht, char *key)
 {
+  unsigned int index = hash(key, ht->capacity);
+  if(ht->storage[index] == NULL) {
+    printf("nothing here by that name");
+
+  }
+
+
+
 
 }
 
@@ -125,7 +151,21 @@ char *hash_table_retrieve(HashTable *ht, char *key)
  */
 void destroy_hash_table(HashTable *ht)
 {
-
+  /* struct LinkedPair *node = create_pair(key, value); */
+  for(int i = 0; i<ht->capacity; i++) {
+    struct LinkedPair *node = ht->storage[i];
+    while(node->next != NULL) {
+      printf("%s", node->value);
+      struct LinkedPair *old_node = node;
+      node = node->next;
+      free(old_node);
+      /* node = node->next; */
+      /* first we get the next node */
+      /* then we free the old node */
+    }
+    free(ht->storage[i]);
+  }
+  free(ht);
 }
 
 /*
@@ -150,18 +190,23 @@ int main(void)
   struct HashTable *ht = create_hash_table(2);
 
   hash_table_insert(ht, "line_1", "Tiny hash table\n");
-  hash_table_insert(ht, "line_2", "Filled beyond capacity\n");
-  hash_table_insert(ht, "line_3", "Linked list saves the day!\n");
+  hash_table_insert(ht, "line_1", "Another tiny hash table\n");
+  hash_table_remove(ht, "hello world");
+  /* hash_table_insert(ht, "line_1", "three\n"); */
+  /* hash_table_insert(ht, "line_1", "four\n"); */
+  /* hash_table_insert(ht, "line_1", "five\n"); */
+  /* hash_table_insert(ht, "line_2", "Filled beyond capacity\n"); */
+  /* hash_table_insert(ht, "line_3", "Linked list saves the day!\n"); */
 
-  printf("%s", hash_table_retrieve(ht, "line_1"));
-  printf("%s", hash_table_retrieve(ht, "line_2"));
-  printf("%s", hash_table_retrieve(ht, "line_3"));
+  /* printf("%s", hash_table_retrieve(ht, "line_1")); */
+  /* printf("%s", hash_table_retrieve(ht, "line_2")); */
+  /* printf("%s", hash_table_retrieve(ht, "line_3")); */
 
-  int old_capacity = ht->capacity;
-  ht = hash_table_resize(ht);
-  int new_capacity = ht->capacity;
+  /* int old_capacity = ht->capacity; */
+  /* ht = hash_table_resize(ht); */
+  /* int new_capacity = ht->capacity; */
 
-  printf("\nResizing hash table from %d to %d.\n", old_capacity, new_capacity);
+  /* printf("\nResizing hash table from %d to %d.\n", old_capacity, new_capacity); */
 
   destroy_hash_table(ht);
 
